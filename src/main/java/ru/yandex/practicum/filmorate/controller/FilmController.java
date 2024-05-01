@@ -1,27 +1,48 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
+@Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @GetMapping
-    public ArrayList<Film> getAllFilms() {
+    public ArrayList<Film> getAll() {
         return new ArrayList<>(films.values());
     }
 
-    private long getNextId() {
-        long currentMaxId = films.keySet()
+    @PostMapping
+    public Film create(@Valid @RequestBody Film film) {
+        log.info("==>POST /films {}", film);
+        film.setId(getNextId());
+        films.put(film.getId(), film);
+        log.info("POST /films <== {}", film);
+        return film;
+    }
+
+    @PutMapping
+    public Film update(@Valid @RequestBody Film film) {
+        log.info("==>PUT /films {}", film);
+        if (films.get(film.getId()) == null) {
+            throw new NotFoundException("Фильма с таким id не существует");
+        }
+        films.put(film.getId(), film);
+        log.info("PUT /films <== {}", film);
+        return film;
+    }
+
+    private Integer getNextId() {
+        int currentMaxId = films.keySet()
                 .stream()
                 .mapToInt(id -> id)
                 .max()
