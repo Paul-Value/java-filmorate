@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -25,8 +27,7 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive
-    @NotNull
-    private Duration duration;
+    private int duration;
 
     @AssertTrue
     private boolean isValidReleaseDate() {
