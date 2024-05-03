@@ -33,7 +33,7 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         log.info("==>PUT /films {}", film);
-        if (films.get(film.getId()) == null) {
+        if (!films.containsKey(film.getId())) {
             throw new NotFoundException("Фильма с таким id не существует");
         }
         films.put(film.getId(), film);

@@ -21,10 +21,4 @@ public class User {
 
     @PastOrPresent
     private LocalDate birthday;
-
-    @AssertTrue
-    public boolean isValidLogin() {
-        return !login.contains(" ");
-    }
-
 }
