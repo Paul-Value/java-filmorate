@@ -14,7 +14,7 @@ import java.util.Map;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private final Map<Integer, Film> films = new HashMap<>();
+
 
     @GetMapping
     public ArrayList<Film> getAll() {
@@ -24,8 +24,7 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.info("==>POST /films {}", film);
-        film.setId(getNextId());
-        films.put(film.getId(), film);
+
         log.info("POST /films <== {}", film);
         return film;
     }
@@ -33,20 +32,8 @@ public class FilmController {
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         log.info("==>PUT /films {}", film);
-        if (!films.containsKey(film.getId())) {
-            throw new NotFoundException("Фильма с таким id не существует");
-        }
-        films.put(film.getId(), film);
+
         log.info("PUT /films <== {}", film);
         return film;
-    }
-
-    private Integer getNextId() {
-        int currentMaxId = films.keySet()
-                .stream()
-                .mapToInt(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
     }
 }
