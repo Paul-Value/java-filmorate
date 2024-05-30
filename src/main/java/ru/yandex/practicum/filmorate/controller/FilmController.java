@@ -35,7 +35,7 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        log.info("==>PUT /films {}", film);
+        log.info("PUT /films {}", film);
         Film updatedFilm = filmService.update(film);
         log.info("PUT /films <== {}", updatedFilm);
         return updatedFilm;
@@ -43,23 +43,23 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void like(@PathVariable long id, @PathVariable long userId) {
-        log.info("PUT /films/{}/like/{} request", id, userId);
+        log.info("PUT /films/{}/like/{} add like", id, userId);
         filmService.addLike(id, userId);
-        log.info("PUT /films/{}/like/{} response: success", id, userId);
+        log.info("PUT /films/{}/like/{} like added", id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
-        log.info("==> DELETE /films/{}/like/{} request", id, userId);
+        log.info("DELETE /films/{}/like/{} delete", id, userId);
         filmService.deleteLike(id, userId);
-        log.info("DELETE /films/{}/like/{} response", id, userId);
+        log.info("DELETE /films/{}/like/{} deleted", id, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getPopular(@RequestParam Integer count) {
-        log.info("GET /films/popular?count={} request", count);
+        log.info("GET /films/popular?count={} get list of popular films", count);
         List<Film> films = filmService.getPopular(count);
-        log.info("GET /films/popular?count={} response: {}", count, films.size());
+        log.info("GET /films/popular?count={} list of popular films: {}", count, films.size());
         return films;
     }
 }
