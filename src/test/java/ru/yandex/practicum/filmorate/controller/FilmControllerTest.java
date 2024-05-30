@@ -4,6 +4,7 @@ import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FilmControllerTest {
     FilmController filmController;
     Film film;
+    FilmService filmService;
 
 
     ValidatorFactory factory = buildDefaultValidatorFactory();
@@ -23,7 +25,7 @@ class FilmControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        filmController = new FilmController();
+        filmController = new FilmController(filmService);
         film = new Film(0, "The Green Mile", "Sad film", LocalDate.of(1999, Month.DECEMBER,
                 6), 189);
     }

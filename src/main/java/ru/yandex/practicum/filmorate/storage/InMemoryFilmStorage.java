@@ -4,10 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
@@ -18,6 +15,11 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public List<Film> getAll() {
         return films.values().stream().toList();
+    }
+
+    @Override
+    public Optional<Film> get(long filmId) {
+        return Optional.ofNullable(films.get(filmId));
     }
 
     @Override
@@ -38,8 +40,6 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public void addLike(long filmId, long userId) {
-        /*Set<Long> filmLike = filmsLikes.computeIfAbsent(filmId, id -> new HashSet<>());
-        filmLike.add(userId);*/
         if (filmsLikes.containsKey(filmId)) {
             filmsLikes.get(filmId).add(userId);
         } else {
