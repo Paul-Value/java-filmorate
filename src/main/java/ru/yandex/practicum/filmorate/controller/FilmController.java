@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopular(@RequestParam Integer count) {
+    public List<Film> getPopular(@RequestParam(defaultValue = "10") @Positive int count) {
         log.info("GET /films/popular?count={} get list of popular films", count);
         List<Film> films = filmService.getPopular(count);
         log.info("GET /films/popular?count={} list of popular films: {}", count, films.size());

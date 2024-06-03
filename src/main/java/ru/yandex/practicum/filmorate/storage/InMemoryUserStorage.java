@@ -44,14 +44,29 @@ public class InMemoryUserStorage implements UserStorage {
             friends.add(friendId);
             usersFriends.put(userId, friends);
         }
+        if (usersFriends.containsKey(friendId)) {
+            usersFriends.get(friendId).add(userId);
+        } else {
+            Set<Long> friends = new HashSet<>();
+            friends.add(userId);
+            usersFriends.put(friendId, friends);
+        }
     }
 
     @Override
     public void deleteFriend(long userId, long friendId) {
-        if (!usersFriends.containsKey(userId)) {
+        if (!users.containsKey(userId)) {
             throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
+        if (!users.containsKey(friendId)) {
+            throw new NotFoundException(String.format("Пользователь с id %d не найден", friendId));
+        }
+        if (!usersFriends.containsKey(userId) || !usersFriends.containsKey(friendId)) {
+            return;
+        }
+
         usersFriends.get(userId).remove(friendId);
+        usersFriends.get(friendId).remove(userId);
     }
 
     @Override
@@ -66,8 +81,12 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getCommonFriends(long userId, long otherUserId) {
         Set<Long> userFriends = usersFriends.getOrDefault(userId, new HashSet<>());
         Set<Long> otherUserFriends = usersFriends.getOrDefault(otherUserId, new HashSet<>());
-        userFriends.retainAll(otherUserFriends);
-        return otherUserFriends.stream().map(users::get).toList();
+        Set<Long> commonFriends = new HashSet<>(userFriends);
+        commonFriends.retainAll(otherUserFriends);
+        //userFriends.retainAll(otherUserFriends);
+       return commonFriends
+                .stream()
+                .map(users::get).toList();
     }
 
     @Override

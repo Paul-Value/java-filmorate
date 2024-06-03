@@ -40,13 +40,8 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public void addLike(long filmId, long userId) {
-        if (filmsLikes.containsKey(filmId)) {
-            filmsLikes.get(filmId).add(userId);
-        } else {
-            Set<Long> likes = new HashSet<>();
-            likes.add(userId);
-            filmsLikes.put(filmId, likes);
-        }
+        Set<Long> usersLikes = filmsLikes.computeIfAbsent(filmId, k -> new HashSet<>());
+        usersLikes.add(userId);
     }
 
     @Override
@@ -63,12 +58,15 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public List<Film> getPopular(Integer count) {
-        return filmsLikes.entrySet()
-                .stream()
-                .sorted(((o1, o2) -> o2.getValue().size() - o1.getValue().size()))
-                .map(l -> films.get(l.getKey()))
-                .limit(count)
-                .toList();
+        count = Math.min(count, filmsLikes.size());
+        List<Film> topFilms = filmsLikes.entrySet().stream()
+                .sorted(Comparator.comparingInt(entry -> entry.getValue().size()))
+                //.limit(count)
+                .map(Map.Entry::getKey)
+                .map(films::get)
+                .toList()
+                .reversed();
+        return topFilms.subList(0, count);
     }
 
     @Override

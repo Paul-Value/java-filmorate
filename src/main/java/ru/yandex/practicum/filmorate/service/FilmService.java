@@ -26,22 +26,19 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public void addLike(long userId, long filmId) {
+    public void addLike(long id, long userId) {
         userStorage.checkExistUser(userId);
-        filmStorage.checkExistFilm(filmId);
-        filmStorage.addLike(filmId, userId);
+        filmStorage.checkExistFilm(id);
+        filmStorage.addLike(id, userId);
     }
 
-    public void deleteLike(long userId, long filmId) {
+    public void deleteLike(long filmId, long userId) {
         userStorage.checkExistUser(userId);
         filmStorage.checkExistFilm(filmId);
         filmStorage.deleteLike(filmId, userId);
     }
 
-    public List<Film> getPopular(Integer count) {
-        if (count == null) {
-            count = 10;
-        }
+    public List<Film> getPopular(int count) {
         return filmStorage.getPopular(count);
     }
 }
