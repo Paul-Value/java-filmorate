@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.*;
 
 @Component
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Long, Film> films = new HashMap<>();
     private final HashMap<Long, Set<Long>> filmsLikes = new HashMap<>();
 
