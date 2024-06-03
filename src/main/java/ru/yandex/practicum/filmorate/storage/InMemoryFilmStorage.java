@@ -53,7 +53,6 @@ public class InMemoryFilmStorage implements FilmStorage{
             throw new NotFoundException("Нет лайка от пользователя с id = " + userId);
         }
         filmsLikes.get(filmId).remove(userId);
-
     }
 
     @Override
