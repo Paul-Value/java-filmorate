@@ -18,15 +18,15 @@ public class UserService {
         log.info("==>POST /users {}", user);
         User newUser = userStorage.save(user);
         log.info("POST /user <== {}", newUser);
-        return userStorage.save(newUser);
+        return newUser;
     }
 
     public User update(User user) {
         userStorage.checkExistUser(user.getId());
         log.info("==>PUT /users {}", user);
         User updatedUser = userStorage.update(user);
-        log.info("PUT /users <== {}", user);
-        return userStorage.update(updatedUser);
+        log.info("PUT /users <== {}", updatedUser);
+        return user;
     }
 
     public List<User> getAll() {

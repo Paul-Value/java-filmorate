@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -20,7 +21,7 @@ public class FilmService {
         log.info("==>POST /films {}", film);
         Film newFilm = filmStorage.save(film);
         log.info("POST /films <== {}", newFilm);
-        return filmStorage.save(newFilm);
+        return newFilm;
     }
 
     public List<Film> getAll() {
@@ -29,10 +30,11 @@ public class FilmService {
     }
 
     public Film update(Film film) {
-        log.info("PUT /films {}", film);
+        filmStorage.checkExistFilm(film.getId());
+        log.info("==>PUT /films {}", film);
         Film updatedFilm = filmStorage.update(film);
-        log.info("PUT /films <== {}", updatedFilm);
-        return filmStorage.update(updatedFilm);
+        log.info("PUT /users <== {}", updatedFilm);
+        return filmStorage.update(film);
     }
 
     public void addLike(long id, long userId) {
