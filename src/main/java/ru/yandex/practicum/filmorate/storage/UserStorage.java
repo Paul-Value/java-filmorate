@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserStorage {
     List<User> getAll();
 
-    Optional<User> get(int id);
+    Optional<User> get(long id);
 
     User save(User user);
 
