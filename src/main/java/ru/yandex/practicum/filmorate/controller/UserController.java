@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,11 @@ public class UserController {
     @GetMapping
     public List<User> getAll() {
         return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User get(@PathVariable @Positive int id) {
+        return userService.get(id);
     }
 
     @PostMapping
