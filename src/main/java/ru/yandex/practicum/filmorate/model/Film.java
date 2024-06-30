@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 /**
  * Film.
@@ -25,6 +26,8 @@ public class Film {
     @Size(max = 200)
     private String description;
     private LocalDate releaseDate;
+    private List<String> genre;
+    private FilmRating filmRating;
 
     @Positive
     private int duration;
