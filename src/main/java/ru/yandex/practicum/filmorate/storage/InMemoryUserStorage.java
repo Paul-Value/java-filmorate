@@ -17,6 +17,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public Optional<User> get(int id) {
+        return Optional.ofNullable(users.get(id));
+    }
+
+    @Override
     public User save(User user) {
         user.setId(getNextId());
         if (user.getName() == null || user.getName().isBlank()) {
