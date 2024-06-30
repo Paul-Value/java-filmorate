@@ -36,6 +36,7 @@ public class UserService {
     }
 
     public User get(int id) {
+        log.info("GET /users/id");
         return userStorage.get(id)
                 .orElseThrow(() -> new NotFoundException("The user with the ID was not found " + id));
     }
