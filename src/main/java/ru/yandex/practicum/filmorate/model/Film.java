@@ -27,7 +27,7 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private List<String> genre;
-    private FilmRating filmRating;
+    private MPA mpa;
 
     @Positive
     private int duration;
