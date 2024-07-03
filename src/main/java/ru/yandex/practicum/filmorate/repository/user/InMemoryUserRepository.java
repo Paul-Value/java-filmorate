@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.repository;
+package ru.yandex.practicum.filmorate.repository.user;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 @Component
-public class InMemoryUserStorage implements UserStorage {
+public class InMemoryUserRepository implements UserRepository {
     private final Map<Long, User> users = new HashMap<>();
     private final Map<Long, Set<Long>> usersFriends = new HashMap<>();
 

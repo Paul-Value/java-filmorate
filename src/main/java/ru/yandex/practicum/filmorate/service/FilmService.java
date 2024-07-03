@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.repository.FilmRepository;
-import ru.yandex.practicum.filmorate.repository.UserStorage;
+import ru.yandex.practicum.filmorate.repository.film.FilmRepository;
+import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 public class FilmService {
     private final FilmRepository filmRepository;
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     public Film save(Film film) {
         log.info("==>POST /films {}", film);
@@ -38,7 +38,7 @@ public class FilmService {
 
     public void addLike(long id, long userId) {
         log.info("PUT /films/{}/like/{} add like", id, userId);
-        userStorage.checkExistUser(userId);
+        userRepository.checkExistUser(userId);
         filmRepository.checkExistFilm(id);
         filmRepository.addLike(id, userId);
         log.info("PUT /films/{}/like/{} like added", id, userId);
@@ -46,7 +46,7 @@ public class FilmService {
 
     public void deleteLike(long filmId, long userId) {
         log.info("DELETE /films/{}/like/{} delete", filmId, userId);
-        userStorage.checkExistUser(userId);
+        userRepository.checkExistUser(userId);
         filmRepository.checkExistFilm(filmId);
         filmRepository.deleteLike(filmId, userId);
         log.info("DELETE /films/{}/like/{} deleted", filmId, userId);
