@@ -5,6 +5,8 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserRowMapper implements RowMapper<User> {
     @Override
@@ -17,5 +19,14 @@ public class UserRowMapper implements RowMapper<User> {
         user.setBirthday(rs.getDate("BIRTHDAY").toLocalDate());
 
         return user;
+    }
+
+    public Map<String, Object> userToMap(User user) {
+        Map<String, Object> temp = new HashMap<>();
+        temp.put("email", user.getEmail());
+        temp.put("login", user.getLogin());
+        temp.put("user_name", user.getName());
+        temp.put("birthday", user.getBirthday());
+        return temp;
     }
 }

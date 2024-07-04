@@ -87,7 +87,8 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public List<User> getFriends(long userId) {
-        String sql = "SELECT u.* FROM USERS u INNER JOIN USER_FRIENDS f ON u.ID = f.FRIEND_ID WHERE f.USER_ID = :userId";
+        String sql = "SELECT u.* FROM USERS u INNER JOIN USER_FRIENDS f ON u.ID = f.FRIEND_ID " +
+                "WHERE f.USER_ID = :userId";
         return jdbc.query(sql, Map.of("userId", userId), mapper);
     }
 

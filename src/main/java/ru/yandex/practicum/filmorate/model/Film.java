@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film {
     private long id;
 
@@ -26,7 +28,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     private LocalDate releaseDate;
-    private List<String> genre;
+    private List<Genre> genre;
     private MPA mpa;
 
     @Positive
