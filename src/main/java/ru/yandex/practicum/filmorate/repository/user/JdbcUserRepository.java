@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import java.util.*;
 import java.sql.ResultSet;
 
 @Repository
+@Qualifier("JdbcUserRepository")
 @RequiredArgsConstructor
 public class JdbcUserRepository implements UserRepository {
     private final NamedParameterJdbcOperations jdbc;

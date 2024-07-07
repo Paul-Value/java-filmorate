@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.repository.film.FilmRepository;
 import ru.yandex.practicum.filmorate.repository.user.UserRepository;
@@ -21,6 +22,11 @@ public class FilmService {
         Film newFilm = filmRepository.save(film);
         log.info("POST /films <== {}", newFilm);
         return newFilm;
+    }
+
+    public Film get(Long id) {
+        return filmRepository.get(id).
+                orElseThrow(() -> new NotFoundException("Film with the ID was not found " + id));
     }
 
     public List<Film> getAll() {

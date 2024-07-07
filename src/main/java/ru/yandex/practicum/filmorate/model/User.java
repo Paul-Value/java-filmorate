@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    @NotNull
     private long id;
 
     @NotBlank

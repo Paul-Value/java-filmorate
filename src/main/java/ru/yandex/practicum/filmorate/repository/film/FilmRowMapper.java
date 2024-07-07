@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository.film;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class FilmRowMapper implements RowMapper<Film> {
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
