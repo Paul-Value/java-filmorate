@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.repository.film;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-@Qualifier("JdbcFilmRepository")
+@Primary
 @RequiredArgsConstructor
 public class JdbcFilmRepository implements FilmRepository {
     private final NamedParameterJdbcOperations jdbc;
@@ -29,25 +28,27 @@ public class JdbcFilmRepository implements FilmRepository {
 
     @Override
     public List<Film> getAll() {
-        String sql = "SELECT f.*, m.id as mpa_id, m.name as mpaRatingName, g.id as genre_id, g.name as genre_name FROM films f " +
-                "LEFT JOIN MPA_RATING m ON f.mpaRatingId = m.id " +
-                "LEFT JOIN FILM_GENRE fg ON f.id = fg.FILM_ID " +
-                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.id";
+        String sql = "SELECT f.*, m.id as mpaId, m.name as mpaRatingName, g.id as genreId, g.name as genreName " +
+                "FROM films f " +
+                "LEFT JOIN MPA_RATING m ON f.mpa_rating_id = m.id " +
+                "LEFT JOIN FILM_GENRE fg ON f.id = fg.film_id " +
+                "LEFT JOIN GENRES g ON fg.genre_id = g.id";
         return jdbc.query(sql, mapper);
     }
 
     @Override
     public Optional<Film> get(long id) {
-        String sql = "SELECT f.*, m.id as mpa_id, m.name as mpaRatingName, g.id as genre_id, g.name as genre_name FROM films f " +
-                "LEFT JOIN MPA_RATING m ON f.mpaRatingId = m.id " +
-                "LEFT JOIN FILM_GENRE fg ON f.id = fg.FILM_ID " +
-                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.id " +
+        String sql = "SELECT f.*, m.id as mpaId, m.name as mpaRatingName, g.id as genreId, g.name as genreName " +
+                "FROM films f " +
+                "LEFT JOIN MPA_RATING m ON f.mpa_rating_id = m.id " +
+                "LEFT JOIN FILM_GENRE fg ON f.id = fg.film_id " +
+                "LEFT JOIN GENRES g ON fg.genre_id = g.id " +
                 "WHERE f.id = :id";
         List<Film> films = jdbc.query(sql, Map.of("id", id), mapper);
         return films.stream().findFirst();
     }
 
-    @SuppressWarnings("DataFlowIssue")
+    //@SuppressWarnings("DataFlowIssue")
     @Override
     public Film save(Film film) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,14 +65,13 @@ public class JdbcFilmRepository implements FilmRepository {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource(params);
 
         jdbc.update(sql, parameterSource, keyHolder, new String[]{"ID"});
-        Long filmId = keyHolder.getKeyAs(Long.class);
-        film.setId(filmId);
+        film.setId(keyHolder.getKeyAs(Long.class));
 
-        if (film.getGenre() != null) {
-            for (Genre genre : film.getGenre()) {
-                jdbc.update("INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (:film_id, :genre_id)",
-                        Map.of("film_id", filmId,
-                                "genre_id", genre.getId()));
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                jdbc.update("INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (:filmId, :genreId)",
+                        Map.of("filmId", film.getId(),
+                                "genreId", genre.getId()));
             }
         }
 
@@ -82,8 +82,8 @@ public class JdbcFilmRepository implements FilmRepository {
         List<Genre> genres = jdbc.query("SELECT g.* FROM GENRES g " +
                         "JOIN FILM_GENRE fg ON g.ID = fg.GENRE_ID" +
                         " WHERE fg.FILM_ID = :filmId",
-                Map.of("filmId", filmId), new GenreRowMapper());
-        film.setGenre(genres);
+                Map.of("filmId", film.getId()), new GenreRowMapper());
+        film.setGenres(genres);
 
         return film;
     }
@@ -91,8 +91,8 @@ public class JdbcFilmRepository implements FilmRepository {
     @Override
     public Film update(Film film) {
         String sql = "UPDATE films " +
-                "SET name = :name, description = :description, releaseDate = :releaseDate, duration = :duration," +
-                " mpaRatingId = :mpaRatingId" +
+                "SET NAME = :name, DESCRIPTION = :description, RELEASE_DATE = :releaseDate, DURATION = :duration," +
+                " MPA_RATING_ID = :mpaRatingId" +
                 " WHERE id = :id";
         HashMap<String, Object> params = new HashMap<>();
         params.put("id", film.getId());
@@ -104,8 +104,8 @@ public class JdbcFilmRepository implements FilmRepository {
 
         jdbc.update(sql, params);
 
-        if (film.getGenre() != null) {
-            for (Genre genre : film.getGenre()) {
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
                 jdbc.update("DELETE FROM FILM_GENRE " +
                         "WHERE FILM_ID = :film_id", Map.of("film_id", film.getId()));
                 jdbc.update("INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (:film_id, :genre_id)",
@@ -116,13 +116,13 @@ public class JdbcFilmRepository implements FilmRepository {
 
         MPA mpa = jdbc.queryForObject("SELECT * FROM MPA_RATING" +
                         " WHERE ID = :mpaRatingId",
-                Map.of("mpaRatingId", film.getMpa().getId()), new BeanPropertyRowMapper<>(MPA.class));
+                Map.of("mpaRatingId", film.getMpa().getId()), new MpaRowMapper());
         film.setMpa(mpa);
 
         List<Genre> genres = jdbc.query("SELECT g.* FROM GENRES g " +
                         "JOIN FILM_GENRE fg ON g.ID = fg.GENRE_ID WHERE fg.FILM_ID = :filmId",
-                Map.of("filmId", film.getId()), new BeanPropertyRowMapper<>(Genre.class));
-        film.setGenre(genres);
+                Map.of("filmId", film.getId()), new GenreRowMapper());
+        film.setGenres(genres);
 
         return film;
     }
@@ -138,19 +138,19 @@ public class JdbcFilmRepository implements FilmRepository {
     @Override
     public void deleteLike(long filmId, long userId) {
         jdbc.update("DELETE FROM USER_FILM_LIKES" +
-                        " WHERE userId = :userId AND filmId = :filmId",
+                        " WHERE USER_Id = :userId AND FILM_ID = :filmId",
                 Map.of("userId", userId, "filmId", filmId));
     }
 
     @Override
     public List<Film> getPopular(Integer count) {
-        String sql = "SELECT f.*, m.id as mpa_id, m.name as mpaName, g.id as genre_id, g.name as genre_name, " +
-                "COUNT(ufl.filmId) as likes " +
+        String sql = "SELECT f.*, m.id as mpaId, m.name as mpaName, g.id as genreId, g.name as genreName, " +
+                "COUNT(ufl.film_id) as likes " +
                 "FROM films f " +
-                "LEFT JOIN MPA_RATING m ON f.mpaRatingId = m.id " +
-                "LEFT JOIN FILM_GENRE fg ON f.id = fg.FILM_ID " +
-                "LEFT JOIN GENRES g ON fg.GENRE_ID = g.id " +
-                "LEFT JOIN user_film_likes ufl ON f.id = ufl.filmId " +
+                "LEFT JOIN MPA_RATING m ON f.mpa_rating_id = m.id " +
+                "LEFT JOIN FILM_GENRE fg ON f.id = fg.film_id " +
+                "LEFT JOIN GENRES g ON fg.genre_id = g.id " +
+                "LEFT JOIN USER_FILM_LIKES ufl ON f.id = ufl.film_id " +
                 "GROUP BY f.id, m.id, g.id " +
                 "ORDER BY likes DESC " +
                 "LIMIT :count";
@@ -162,7 +162,7 @@ public class JdbcFilmRepository implements FilmRepository {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("filmId", filmId);
         Boolean exist = jdbc.query(
-                "SELECT * FROM FILMS WHERE FILM_ID = :filmId",
+                "SELECT * FROM FILMS WHERE ID = :filmId",
                 params, ResultSet::next);
 
         if (Boolean.FALSE.equals(exist)) {

@@ -5,10 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.repository.film.FilmRepository;
+import ru.yandex.practicum.filmorate.repository.genre.GenreRepository;
+import ru.yandex.practicum.filmorate.repository.mpa.MpaRepository;
 import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,9 +21,16 @@ import java.util.List;
 public class FilmService {
     private final FilmRepository filmRepository;
     private final UserRepository userRepository;
+    private final GenreRepository genreRepository;
+    private final MpaRepository mpaRepository;
 
     public Film save(Film film) {
         log.info("==>POST /films {}", film);
+        mpaValidate(film);
+        if (film.getGenres() != null) {
+            film.setGenres(getUniqueGenres(film));
+            genresValidation(film);
+        }
         Film newFilm = filmRepository.save(film);
         log.info("POST /films <== {}", newFilm);
         return newFilm;
@@ -63,5 +75,36 @@ public class FilmService {
         List<Film> films = filmRepository.getPopular(count);
         log.info("GET /films/popular?count={} list of popular films: {}", count, films.size());
         return films;
+    }
+
+    private void mpaValidate(Film film) {
+        long filmMpaId = film.getMpa().getId();
+        List<Long> mpaIds = mpaRepository.getAll()
+                .stream()
+                .map(MPA::getId).toList();
+        if (!mpaIds.contains(filmMpaId)) {
+            throw new IllegalArgumentException("MPA with ID: " + filmMpaId + " not exist");
+        }
+    }
+
+    private List<Genre> getUniqueGenres(Film film) {
+        return film.getGenres().stream()
+                .collect(Collectors.toMap(Genre::getId, genre -> genre, (oldValue, newValue) -> oldValue))
+                .values()
+                .stream()
+                .toList();
+    }
+
+    private void genresValidation(Film film) {
+        List<Long> genreIds = genreRepository.getAll()
+                .stream()
+                .map(Genre::getId)
+                .toList();
+
+        for (Genre genre : film.getGenres()) {
+            if (!genreIds.contains(genre.getId())) {
+                throw new IllegalArgumentException("Genre with id" + genre.getId() + " not exist");
+            }
+        }
     }
 }

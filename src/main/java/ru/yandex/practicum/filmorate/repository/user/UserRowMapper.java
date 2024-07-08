@@ -27,7 +27,7 @@ public class UserRowMapper implements RowMapper<User> {
         Map<String, Object> temp = new HashMap<>();
         temp.put("email", user.getEmail());
         temp.put("login", user.getLogin());
-        temp.put("user_name", user.getName());
+        temp.put("name", user.getName());
         temp.put("birthday", user.getBirthday());
         return temp;
     }

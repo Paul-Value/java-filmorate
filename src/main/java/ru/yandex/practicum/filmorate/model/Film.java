@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.sql.Update;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -26,7 +27,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     private LocalDate releaseDate;
-    private List<Genre> genre;
+    private List<Genre> genres;
     private MPA mpa;
 
     @Positive

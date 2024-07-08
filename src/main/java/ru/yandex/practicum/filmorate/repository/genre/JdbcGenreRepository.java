@@ -18,7 +18,7 @@ public class JdbcGenreRepository implements GenreRepository {
 
     @Override
     public List<Genre> getByIds(List<Long> ids) {
-        String query = "SELECT * FROM GENRES WHERE GENRE_ID IN (:ids)";
+        String query = "SELECT * FROM GENRES WHERE id IN (:ids)";
         return jdbc.query(query, new MapSqlParameterSource("ids", ids), mapper);
     }
 
