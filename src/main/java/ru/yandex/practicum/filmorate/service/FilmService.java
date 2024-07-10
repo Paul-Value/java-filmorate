@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.IllegalBodyRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -83,7 +84,7 @@ public class FilmService {
                 .stream()
                 .map(MPA::getId).toList();
         if (!mpaIds.contains(filmMpaId)) {
-            throw new IllegalArgumentException("MPA with ID: " + filmMpaId + " not exist");
+            throw new IllegalBodyRequestException("MPA with ID: " + filmMpaId + " not exist");
         }
     }
 
@@ -103,7 +104,7 @@ public class FilmService {
 
         for (Genre genre : film.getGenres()) {
             if (!genreIds.contains(genre.getId())) {
-                throw new IllegalArgumentException("Genre with id" + genre.getId() + " not exist");
+                throw new IllegalBodyRequestException("Genre with ID:" + genre.getId() + " not exist");
             }
         }
     }
