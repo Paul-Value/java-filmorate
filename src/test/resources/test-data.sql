@@ -1,11 +1,11 @@
-merge into mpa (mpa_id, name)
+merge into mpa_rating (id, name)
     values (1, 'G'),
            (2, 'PG'),
            (3, 'PG-13'),
            (4, 'R'),
            (5, 'NC-17');
 
-merge into genres (genre_id, name)
+merge into genres (id, name)
     values (1, 'Комедия'),
            (2, 'Драма'),
            (3, 'Мультфильм'),
@@ -21,7 +21,7 @@ INSERT INTO USERS (NAME, EMAIL, LOGIN, BIRTHDAY)
 --        ('Ismael Cassin I', 'Demarcus.Johnston79@gmail.com', 'KfdrBuEJSN', '2005-11-23'),
 --        ('Darnell Terry', 'Moriah_Cummings@gmail.com', 'QmMK4wsMov', '1964-12-03');
 
-INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID)
+INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_RATING_ID)
     VALUES ('TJjtJuGS8dUeAzm', 'HZOE3ct3plkt3m4ip6dN4EMzqop93SdO5QdJD16uzdhDIgUaQl', '1962-01-31', 156, 3),
            ('8B8qgTBRtGKBdJN', 'wrVuIIL79f228O2tecGsMdMVbltg1xKpz5qLz86LVHIOv9xJq1', '1962-03-06', 65, 4),
            ('uUk6L30WM5jNBHc', 'cB22DWO2euD7py3KEnxpmqcBOh2sJZAOkHJP1pxgPlvbnuxEVW', '1997-03-04', 118, 1);
@@ -29,20 +29,20 @@ INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID)
 --        ('G9Bm4qk7CXJdi1G', '7U5R4z7hMDwIedpjT7PvYLT3GQU0bD2zNMVaseYqw7uzZmk2J8', '2004-09-08', 156, 2),
 --        ('fHW3acwMUAeOcoG', 'uF2ItDav0ypDF3lgDn7Hcd8mhMZrv64L27mODwdiUVv2Zazut2', '1983-07-10', 115, 1);
 
-INSERT INTO FILMS_GENRES (FILM_ID, GENRE_ID)
+INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID)
     VALUES (1, 2),
            (1, 1),
            (2, 3),
            (3, 4);
 
-INSERT INTO FRIENDSHIP (USER_ID, FRIEND_ID)
+INSERT INTO USER_FRIENDS (USER_ID, FRIEND_ID)
     VALUES (1, 2),
            (1, 3),
            (2, 1),
            (3, 2);
 
 
-INSERT INTO LIKES (FILM_ID, USER_ID)
+INSERT INTO USER_FILM_LIKES (FILM_ID, USER_ID)
     VALUES (2, 2),
            (2, 1),
            (1, 1);
