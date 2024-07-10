@@ -38,8 +38,8 @@ public class FilmService {
     }
 
     public Film get(Long id) {
-        return filmRepository.get(id).
-                orElseThrow(() -> new NotFoundException("Film with the ID was not found " + id));
+        return filmRepository.get(id)
+                .orElseThrow(() -> new NotFoundException("Film with the ID was not found " + id));
     }
 
     public List<Film> getAll() {
