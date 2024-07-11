@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.repository.film;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setDescription(rs.getString("DESCRIPTION"));
         film.setDuration(rs.getInt("DURATION"));
         film.setReleaseDate(rs.getDate("RELEASE_DATE").toLocalDate());
-        film.setMpa(new MPA(rs.getInt("MPA_RATING_ID"), rs.getString("MPA_RATING.NAME")));
+        film.setMpa(new Mpa(rs.getInt("MPA_RATING_ID"), rs.getString("MPA_RATING.NAME")));
         return film;
     }
 }

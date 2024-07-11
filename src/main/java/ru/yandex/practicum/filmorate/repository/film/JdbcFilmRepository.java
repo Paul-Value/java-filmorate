@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.repository.film;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -16,7 +15,6 @@ import java.sql.ResultSet;
 import java.util.*;
 
 @Repository
-@Primary
 @RequiredArgsConstructor
 public class JdbcFilmRepository implements FilmRepository {
     private final NamedParameterJdbcOperations jdbc;
@@ -108,9 +106,9 @@ public class JdbcFilmRepository implements FilmRepository {
                         "ORDER BY COUNT(USER_FILM_LIKES.USER_ID) desc " +
                         "LIMIT :count",
                 Map.of("count", count), mapper);
-        final Map<Long, List<Genre>> filmGenres = getAllFilmsGenres(genres);
+        final Map<Long, LinkedHashSet<Genre>> filmGenres = getAllFilmsGenres(genres);
 
-        films.forEach(film -> film.setGenres(filmGenres.getOrDefault(film.getId(), new ArrayList<>())));
+        films.forEach(film -> film.setGenres(filmGenres.getOrDefault(film.getId(), new LinkedHashSet<>())));
         return films;
     }
 
@@ -118,8 +116,8 @@ public class JdbcFilmRepository implements FilmRepository {
         return jdbc.query("SELECT * FROM GENRES", new GenreRowMapper());
     }
 
-    Map<Long, List<Genre>> getAllFilmsGenres(final List<Genre> allGenres) {
-        final Map<Long, List<Genre>> filmGenres = new HashMap<>();
+    Map<Long, LinkedHashSet<Genre>> getAllFilmsGenres(final List<Genre> allGenres) {
+        final Map<Long, LinkedHashSet<Genre>> filmGenres = new HashMap<>();
         jdbc.query("SELECT * FROM FILM_GENRE", rs -> {
                     while (rs.next()) {
                         final long filmId = rs.getLong("film_id");
@@ -128,7 +126,7 @@ public class JdbcFilmRepository implements FilmRepository {
                                 .filter(g -> g.getId() == genreId)
                                 .findFirst()
                                 .get();
-                        filmGenres.computeIfAbsent(filmId, k -> new ArrayList<>()).add(genre);
+                        filmGenres.computeIfAbsent(filmId, k -> new LinkedHashSet<>()).add(genre);
                     }
                 }
         );

@@ -34,4 +34,6 @@ public class JdbcGenreRepository implements GenreRepository {
         String query = "SELECT * FROM GENRES";
         return jdbc.query(query, mapper);
     }
+
+
 }

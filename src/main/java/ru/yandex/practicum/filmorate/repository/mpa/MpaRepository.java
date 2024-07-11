@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.repository.mpa;
 
-import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MpaRepository {
-    Optional<MPA> get(Long id);
+    Optional<Mpa> get(Long id);
 
-    List<MPA> getAll();
+    List<Mpa> getAll();
 }

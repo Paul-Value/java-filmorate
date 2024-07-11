@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS USERS (
     BIRTHDAY DATE
 );
 
+create unique index if not exists USER_EMAIL_UINDEX on USERS (email);
+create unique index if not exists USER_LOGIN_UINDEX on USERS (login);
+
 CREATE TABLE IF NOT EXISTS GENRES (
     ID BIGINT NOT NULL PRIMARY KEY,
     NAME VARCHAR(255) NOT NULL

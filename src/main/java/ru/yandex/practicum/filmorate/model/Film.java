@@ -1,13 +1,15 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.yandex.practicum.filmorate.constraint.CorrectReleaseDate;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 /**
  * Film.
@@ -16,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-    @NotNull
+    public static final String RELEASE_DATE_LIMIT = "1895-12-28";
     private long id;
 
     @NotBlank
@@ -25,17 +27,11 @@ public class Film {
     @NotBlank
     @Size(max = 200)
     private String description;
+    @CorrectReleaseDate(value = RELEASE_DATE_LIMIT)
     private LocalDate releaseDate;
-    private List<Genre> genres;
-    private MPA mpa;
+    private LinkedHashSet<Genre> genres;
+    private Mpa mpa;
 
     @Positive
     private int duration;
-
-    @AssertTrue
-    private boolean isValidReleaseDate() {
-        return releaseDate.isAfter(LocalDate.of(1895, Month.DECEMBER, 28));
-    }
-
-
 }

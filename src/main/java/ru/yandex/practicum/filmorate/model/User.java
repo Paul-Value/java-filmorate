@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    @NotNull
     private long id;
 
     @NotBlank
@@ -19,9 +18,11 @@ public class User {
     private String email;
 
     @NotBlank
+    @Pattern(regexp = "^\\S*$", message = "The login cannot contain spaces.")
     private String login;
     private String name;
 
+    @NotNull
     @PastOrPresent
     private LocalDate birthday;
 }

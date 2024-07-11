@@ -7,12 +7,13 @@ import ru.yandex.practicum.filmorate.exception.IllegalBodyRequestException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.repository.film.FilmRepository;
 import ru.yandex.practicum.filmorate.repository.genre.GenreRepository;
 import ru.yandex.practicum.filmorate.repository.mpa.MpaRepository;
 import ru.yandex.practicum.filmorate.repository.user.UserRepository;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,18 +83,19 @@ public class FilmService {
         long filmMpaId = film.getMpa().getId();
         List<Long> mpaIds = mpaRepository.getAll()
                 .stream()
-                .map(MPA::getId).toList();
+                .map(Mpa::getId).toList();
         if (!mpaIds.contains(filmMpaId)) {
             throw new IllegalBodyRequestException("MPA with ID: " + filmMpaId + " not exist");
         }
     }
 
-    private List<Genre> getUniqueGenres(Film film) {
-        return film.getGenres().stream()
+    private LinkedHashSet<Genre> getUniqueGenres(Film film) {
+        List<Genre> genres = film.getGenres().stream()
                 .collect(Collectors.toMap(Genre::getId, genre -> genre, (oldValue, newValue) -> oldValue))
                 .values()
                 .stream()
                 .toList();
+        return new LinkedHashSet<>(genres);
     }
 
     private void genresValidation(Film film) {
