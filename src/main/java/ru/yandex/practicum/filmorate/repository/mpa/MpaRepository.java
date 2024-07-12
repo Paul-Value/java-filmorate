@@ -9,4 +9,6 @@ public interface MpaRepository {
     Optional<Mpa> get(Long id);
 
     List<Mpa> getAll();
+
+    List<Mpa> getById(Long id);
 }

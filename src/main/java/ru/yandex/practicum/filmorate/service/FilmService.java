@@ -80,12 +80,16 @@ public class FilmService {
     }
 
     private void mpaValidate(Film film) {
-        long filmMpaId = film.getMpa().getId();
+        /*long filmMpaId = film.getMpa().getId();
         List<Long> mpaIds = mpaRepository.getAll()
                 .stream()
                 .map(Mpa::getId).toList();
         if (!mpaIds.contains(filmMpaId)) {
             throw new IllegalBodyRequestException("MPA with ID: " + filmMpaId + " not exist");
+        }*/
+        Mpa filmMpa = film.getMpa();
+        if (mpaRepository.getById(filmMpa.getId()).size() != 1) {
+            throw new IllegalBodyRequestException("Mpa Ids" + filmMpa.getId() + " not contains in DATA");
         }
     }
 

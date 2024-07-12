@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.repository.mpa;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -25,5 +26,11 @@ public class JdbcMpaRepository implements MpaRepository {
     @Override
     public List<Mpa> getAll() {
         return jdbc.query("SELECT * FROM mpa_rating", mapper);
+    }
+
+    @Override
+    public List<Mpa> getById(Long id) {
+        return jdbc.query("SELECT * FROM mpa_rating WHERE mpa_rating.id = :id",
+                new MapSqlParameterSource("id", id), mapper);
     }
 }
