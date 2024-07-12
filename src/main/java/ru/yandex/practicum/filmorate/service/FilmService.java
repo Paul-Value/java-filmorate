@@ -99,15 +99,17 @@ public class FilmService {
     }
 
     private void genresValidation(Film film) {
-        List<Long> genreIds = genreRepository.getAll()
-                .stream()
+        if (film.getGenres() == null) {
+            return;
+        }
+        List<Long> filmGenreIds = film.getGenres().stream()
                 .map(Genre::getId)
                 .toList();
 
-        for (Genre genre : film.getGenres()) {
-            if (!genreIds.contains(genre.getId())) {
-                throw new IllegalBodyRequestException("Genre with ID:" + genre.getId() + " not exist");
-            }
+        List<Genre> genres = genreRepository.getByIds(filmGenreIds);
+
+        if (genres.size() != filmGenreIds.size()) {
+            throw new IllegalBodyRequestException("Genre Ids " + filmGenreIds + " not contains in table Genres");
         }
     }
 }
